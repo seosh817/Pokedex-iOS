@@ -1,6 +1,6 @@
 import Foundation
 
-struct Pokemon: Decodable {
+nonisolated struct Pokemon: Decodable {
     let id: Int
     let name: String
     let height: Int // 데시미터 (4 -> 0.4m)
@@ -13,7 +13,7 @@ struct Pokemon: Decodable {
     }
 }
 
-struct NamedResource: Decodable {
+nonisolated struct NamedResource: Decodable {
     let name: String
     let url: URL
 }

@@ -1,6 +1,6 @@
 import Foundation
 
-struct PokemonSpecies: Decodable {
+nonisolated struct PokemonSpecies: Decodable {
     let id: Int
     let names: [LocalizedName]
 
