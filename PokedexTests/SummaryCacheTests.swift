@@ -19,4 +19,12 @@ struct SummaryCacheTests {
         let loadCount = await cache.loadCount
         #expect(loadCount == 1)
     }
+
+    @Test("같은 포켓몬을 동시에 요청해도 한 번만 불러온다")
+    func dedupesConcurrentCalls() async throws {
+        let summaries = try await client.fetchSummaries(ids: [25, 25, 25, 25])
+        #expect(summaries.count == 4)
+        let loadCount = await cache.loadCount
+        #expect(loadCount == 1)
+    }
 }
