@@ -49,6 +49,25 @@ struct PokeAPIClient {
             return results.sorted { $0.id < $1.id }
         }
     }
+    
+    func summaryPages(ids: [Int], pageSize: Int) -> AsyncThrowingStream<[PokemonSummary], Error> {
+        
+        AsyncThrowingStream { continuation in
+            let task = Task {
+                do {
+                    for start in stride(from: 0, to: ids.count, by: pageSize) {
+                        let end = min(start + pageSize, ids.count)
+                        let page = try await fetchSummaries(ids: Array(ids[start..<end]))
+                        continuation.yield(page)
+                    }
+                    continuation.finish()
+                } catch {
+                    continuation.finish(throwing: error)
+                }
+            }
+            continuation.onTermination = { _ in task.cancel() }
+        }
+    }
 
     private func get<T: Decodable & Sendable>(_ path: String) async throws -> T {
         let url = baseURL.appending(path: path)
