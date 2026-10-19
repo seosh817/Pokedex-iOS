@@ -29,6 +29,7 @@ struct PokemonSummaryTests {
     
     @Test("동시에 불러오면 하나씩 불러올 때보다 빠르다")
     func parallelIsFaster() async throws {
+        let client = PokeAPIClient(session: URLSession(configuration: .ephemeral))
         let clock = ContinuousClock()
         let serial = try await clock.measure {
             for id in 1...10 {

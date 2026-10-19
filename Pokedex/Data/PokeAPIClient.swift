@@ -2,9 +2,11 @@ import Foundation
 
 struct PokeAPIClient {
     private let baseURL = URL(string: "https://pokeapi.co/api/v2/")!
+    private let session: URLSession
     private let summaryCache: SummaryCache
     
-    init(summaryCache: SummaryCache = SummaryCache()) {
+    init(session: URLSession = .shared, summaryCache: SummaryCache = SummaryCache()) {
+        self.session = session
         self.summaryCache = summaryCache
     }
 
@@ -50,7 +52,7 @@ struct PokeAPIClient {
 
     private func get<T: Decodable>(_ path: String) async throws -> T {
         let url = baseURL.appending(path: path)
-        let (data, response) = try await URLSession.shared.data(from: url)
+        let (data, response) = try await session.data(from: url)
         guard let http = response as? HTTPURLResponse, http.statusCode == 200
         else {
             throw URLError(.badServerResponse)
