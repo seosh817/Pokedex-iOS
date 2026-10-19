@@ -56,6 +56,7 @@ struct PokeAPIClient {
             let task = Task {
                 do {
                     for start in stride(from: 0, to: ids.count, by: pageSize) {
+                        try Task.checkCancellation()
                         let end = min(start + pageSize, ids.count)
                         let page = try await fetchSummaries(ids: Array(ids[start..<end]))
                         continuation.yield(page)
