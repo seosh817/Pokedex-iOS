@@ -2,6 +2,11 @@ import Foundation
 
 struct PokeAPIClient {
     private let baseURL = URL(string: "https://pokeapi.co/api/v2/")!
+    private let summaryCache: SummaryCache
+    
+    init(summaryCache: SummaryCache = SummaryCache()) {
+        self.summaryCache = summaryCache
+    }
 
     func fetchPokemon(id: Int) async throws -> Pokemon {
         try await get("pokemon/\(id)")
@@ -12,6 +17,12 @@ struct PokeAPIClient {
     }
 
     func fetchSummary(id: Int) async throws -> PokemonSummary {
+        try await summaryCache.summary(id: id) {
+            try await loadSummary(id: id)
+        }
+    }
+    
+    private func loadSummary(id: Int) async throws -> PokemonSummary {
         async let pokemon = fetchPokemon(id: id)
         async let species = fetchSpecies(id: id)
         let (p, s) = try await (pokemon, species)
