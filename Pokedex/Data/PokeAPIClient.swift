@@ -50,13 +50,18 @@ struct PokeAPIClient {
         }
     }
 
-    private func get<T: Decodable>(_ path: String) async throws -> T {
+    private func get<T: Decodable & Sendable>(_ path: String) async throws -> T {
         let url = baseURL.appending(path: path)
         let (data, response) = try await session.data(from: url)
         guard let http = response as? HTTPURLResponse, http.statusCode == 200
         else {
             throw URLError(.badServerResponse)
         }
-        return try JSONDecoder().decode(T.self, from: data)
+        return try await Self.decode(data)
+    }
+    
+    @concurrent
+    private static func decode<T: Decodable & Sendable>(_ data: Data) async throws -> T {
+        try JSONDecoder().decode(T.self, from: data)
     }
 }
