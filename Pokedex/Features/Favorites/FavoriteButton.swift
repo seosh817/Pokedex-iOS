@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct FavoriteButton: View {
-    @State private var isOn = false
+    @Binding var isOn: Bool
     
     var body: some View {
         Button {
@@ -17,6 +17,7 @@ struct FavoriteButton: View {
 }
 
 #Preview(traits: .sizeThatFitsLayout) {
-    FavoriteButton()
+    @Previewable @State var isOn: Bool = false
+    FavoriteButton(isOn: $isOn)
         .padding()
 }
