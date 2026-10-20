@@ -2,7 +2,7 @@ import SwiftUI
 
 struct PokemonCardView: View {
     let summary: PokemonSummary
-    @Binding var isFavorite: Bool
+    @Environment(FavoritesStore.self) private var favorites
 
     var body: some View {
         HStack(spacing: 16) {
@@ -27,7 +27,12 @@ struct PokemonCardView: View {
 
             Spacer()
 
-            FavoriteButton(isOn: $isFavorite)
+            FavoriteButton(
+                isOn: Binding(
+                    get: { favorites.contains(summary.id) },
+                    set: { _ in favorites.toggle(summary.id)}
+                )
+            )
         }
         .padding()
         .background(
@@ -39,48 +44,48 @@ struct PokemonCardView: View {
 }
 
 #Preview("피카츄") {
-    PokemonCardView(summary: .pikachu, isFavorite: .constant(true))
+    PokemonCardView(summary: .pikachu)
         .padding()
+        .environment(FavoritesStore(ids: [25]))
 }
 
 #Preview("여러 장") {
     CardListPreview()
+        .environment(FavoritesStore(ids: [25]))
 }
 
 #Preview("다크 모드") {
-    PokemonCardView(summary: .pikachu, isFavorite: .constant(true))
+    PokemonCardView(summary: .pikachu)
         .padding()
         .background(Color(.systemGroupedBackground))
         .preferredColorScheme(.dark)
+        .environment(FavoritesStore())
 }
 
 private struct CardListPreview: View {
-    @State private var favorites: Set<Int> = [25]
+    @Environment(FavoritesStore.self) private var favorites
     let summaries: [PokemonSummary] = [.bulbasaur, .charmander, .pikachu]
 
     var body: some View {
+        @Bindable var favorites = favorites
         VStack(spacing: 12) {
-            Text("즐겨찾기 \(favorites.count)마리")
+            Toggle("즐겨찾기만 보기", isOn: $favorites.showOnlyFavorites)
+            Text("즐겨찾기 \(favorites.ids.count)마리")
                 .font(.headline)
-            ForEach(summaries) { summary in
-                PokemonCardView(summary: summary, isFavorite: isFavorite(summary.id))
+            ForEach(visibleSummaries) { summary in
+                PokemonCardView(summary: summary)
             }
+            Spacer()
         }
         .padding()
-        .frame(maxHeight: .infinity)
         .background(Color(.systemGroupedBackground))
     }
- 
-    private func isFavorite(_ id: Int) -> Binding<Bool> {
-        Binding(
-            get: { favorites.contains(id)},
-            set: { isOn in
-                if isOn {
-                    favorites.insert(id)
-                } else {
-                    favorites.remove(id)
-                }
-            }
-        )
+
+    private var visibleSummaries: [PokemonSummary] {
+        if favorites.showOnlyFavorites {
+            summaries.filter { favorites.contains($0.id)}
+        } else {
+            summaries
+        }
     }
 }
