@@ -7,11 +7,12 @@ struct PokemonDetailView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 16) {
-                Text(String(format: "#%03d", summary.id))
-                    .font(.title.monospacedDigit().bold())
-                    .foregroundStyle(.secondary)
-                    .frame(width: 120, height: 120)
+                PokemonImage(url: summary.imageURL)
+                    .frame(width: 240, height: 240)
                     .background(.quaternary, in: .circle)
+                Text(String(format: "#%03d", summary.id))
+                    .font(.title3.monospacedDigit().bold())
+                    .foregroundStyle(.secondary)
                 Text(summary.koreanName)
                     .font(.largeTitle.bold())
                 Text(summary.name.capitalized)
