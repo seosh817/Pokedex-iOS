@@ -10,9 +10,13 @@ struct PokemonDetailView: View {
                 PokemonImage(url: summary.imageURL)
                     .frame(width: 240, height: 240)
                     .background(.quaternary, in: .circle)
-                Text(String(format: "#%03d", summary.id))
-                    .font(.title3.monospacedDigit().bold())
-                    .foregroundStyle(.secondary)
+                    .overlay(alignment: .bottom) {
+                        Text(String(format: "#%03d", summary.id))
+                            .font(.title3.monospacedDigit().bold())
+                            .padding(.horizontal, 14)
+                            .padding(.vertical, 6)
+                            .glassCapsule()
+                    }
                 Text(summary.koreanName)
                     .font(.largeTitle.bold())
                 Text(summary.name.capitalized)
