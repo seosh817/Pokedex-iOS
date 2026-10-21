@@ -8,7 +8,7 @@ struct FilterSheet: View {
         @Bindable var favorites = favorites
         NavigationStack {
             Form {
-                Toggle("즐겨찾기만 보기", isOn: $favorites.showOnlyFavorites)
+                Toggle("즐겨찾기만 보기", isOn: $favorites.showOnlyFavorites.animation())
             }
             .navigationTitle("보기 설정")
             .navigationBarTitleDisplayMode(.inline)
