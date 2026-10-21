@@ -3,14 +3,30 @@ import SwiftUI
 struct PokemonListView: View {
     let title: String
     let summaries: [PokemonSummary]
-    
+    var isLoadingMore = false
+    var onReachEnd: (() async -> Void)? = nil
+
     var body: some View {
-        List(summaries) { summary in
-            NavigationLink(value: summary) {
-                PokemonCardView(summary: summary)
+        List {
+            ForEach(summaries) { summary in
+                NavigationLink(value: summary) {
+                    PokemonCardView(summary: summary)
+                }
+                .listRowSeparator(.hidden)
+                .listRowBackground(Color.clear)
+                .task {
+                    if summary.id == summaries.last?.id {
+                        await onReachEnd?()
+                    }
+                }
             }
-            .listRowSeparator(.hidden)
-            .listRowBackground(Color.clear)
+
+            if isLoadingMore {
+                ProgressView()
+                    .frame(maxWidth: .infinity)
+                    .listRowSeparator(.hidden)
+                    .listRowBackground(Color.clear)
+            }
         }
         .listStyle(.plain)
         .scrollContentBackground(.hidden)
