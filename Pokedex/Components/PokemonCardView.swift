@@ -6,13 +6,14 @@ struct PokemonCardView: View {
 
     var body: some View {
         HStack(spacing: 16) {
-            Text(String(format: "#%03d", summary.id))
-                .font(.subheadline.monospacedDigit().bold())
-                .foregroundStyle(.secondary)
-                .frame(width: 56, height: 56)
+            PokemonImage(url: summary.imageURL)
+                .frame(width: 64, height: 64)
                 .background(.quaternary, in: .circle)
 
             VStack(alignment: .leading, spacing: 6) {
+                Text(String(format: "#%03d", summary.id))
+                    .font(.caption.monospacedDigit().bold())
+                    .foregroundStyle(.secondary)
                 Text(summary.koreanName)
                     .font(.headline)
                 Text(summary.name.capitalized)
@@ -30,7 +31,7 @@ struct PokemonCardView: View {
             FavoriteButton(
                 isOn: Binding(
                     get: { favorites.contains(summary.id) },
-                    set: { _ in favorites.toggle(summary.id)}
+                    set: { _ in favorites.toggle(summary.id) }
                 )
             )
         }
@@ -83,7 +84,7 @@ private struct CardListPreview: View {
 
     private var visibleSummaries: [PokemonSummary] {
         if favorites.showOnlyFavorites {
-            summaries.filter { favorites.contains($0.id)}
+            summaries.filter { favorites.contains($0.id) }
         } else {
             summaries
         }
