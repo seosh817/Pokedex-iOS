@@ -2,6 +2,7 @@ import SwiftUI
 
 struct PokemonCardView: View {
     let summary: PokemonSummary
+    let isFavorite: Bool
     @Environment(FavoritesStore.self) private var favorites
 
     var body: some View {
@@ -30,7 +31,7 @@ struct PokemonCardView: View {
 
             FavoriteButton(
                 isOn: Binding(
-                    get: { favorites.contains(summary.id) },
+                    get: { isFavorite },
                     set: { _ in favorites.toggle(summary.id) }
                 )
             )
@@ -45,7 +46,7 @@ struct PokemonCardView: View {
 }
 
 #Preview("피카츄") {
-    PokemonCardView(summary: .pikachu)
+    PokemonCardView(summary: .pikachu, isFavorite: true)
         .padding()
         .environment(FavoritesStore(ids: [25]))
 }
@@ -56,7 +57,7 @@ struct PokemonCardView: View {
 }
 
 #Preview("다크 모드") {
-    PokemonCardView(summary: .pikachu)
+    PokemonCardView(summary: .pikachu, isFavorite: false)
         .padding()
         .background(Color(.systemGroupedBackground))
         .preferredColorScheme(.dark)
@@ -74,7 +75,7 @@ private struct CardListPreview: View {
             Text("즐겨찾기 \(favorites.ids.count)마리")
                 .font(.headline)
             ForEach(visibleSummaries) { summary in
-                PokemonCardView(summary: summary)
+                PokemonCardView(summary: summary, isFavorite: favorites.contains(summary.id))
             }
             Spacer()
         }

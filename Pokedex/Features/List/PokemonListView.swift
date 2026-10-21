@@ -5,12 +5,13 @@ struct PokemonListView: View {
     let summaries: [PokemonSummary]
     var isLoadingMore = false
     var onReachEnd: (() async -> Void)? = nil
+    @Environment(FavoritesStore.self) private var favorites
 
     var body: some View {
         List {
             ForEach(summaries) { summary in
                 NavigationLink(value: summary) {
-                    PokemonCardView(summary: summary)
+                    PokemonCardView(summary: summary, isFavorite: favorites.contains(summary.id))
                 }
                 .listRowSeparator(.hidden)
                 .listRowBackground(Color.clear)
