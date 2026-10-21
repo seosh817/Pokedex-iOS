@@ -36,12 +36,7 @@ struct PokemonCardView: View {
                 )
             )
         }
-        .padding()
-        .background(
-            Color(.secondarySystemGroupedBackground)
-                .shadow(.drop(color: .black.opacity(0.1), radius: 4, y: 2)),
-            in: .rect(cornerRadius: 16)
-        )
+        .cardStyle()
     }
 }
 
