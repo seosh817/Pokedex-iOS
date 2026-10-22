@@ -23,7 +23,10 @@ public struct PokeAPIClient: Sendable {
     }
 
     public func fetchDetail(id: Int) async throws -> PokemonDetail {
-        PokemonDetail(try await fetchPokemon(id: id))
+        async let pokemon = fetchPokemon(id: id)
+        async let species = fetchSpecies(id: id)
+        let (p, s) = try await (pokemon, species)
+        return PokemonDetail(pokemon: p, species: s)
     }
 
     public func fetchSummary(id: Int) async throws -> PokemonSummary {
@@ -97,6 +100,8 @@ public struct PokeAPIClient: Sendable {
     private static func decode<T: Decodable & Sendable>(_ data: Data)
         async throws -> T
     {
-        try JSONDecoder().decode(T.self, from: data)
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+        return try decoder.decode(T.self, from: data)
     }
 }
