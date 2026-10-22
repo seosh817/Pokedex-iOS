@@ -22,6 +22,10 @@ public struct PokeAPIClient: Sendable {
         try await get("pokemon-species/\(id)")
     }
 
+    public func fetchDetail(id: Int) async throws -> PokemonDetail {
+        PokemonDetail(try await fetchPokemon(id: id))
+    }
+
     public func fetchSummary(id: Int) async throws -> PokemonSummary {
         try await summaryCache.summary(id: id) {
             try await loadSummary(id: id)
