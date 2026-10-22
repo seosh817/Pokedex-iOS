@@ -1,5 +1,6 @@
 import Foundation
 import SwiftData
+import PokeAPI
 
 @Model
 final class FavoritePokemon {

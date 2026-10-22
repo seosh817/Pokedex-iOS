@@ -1,6 +1,7 @@
 import Foundation
 import Observation
 import SwiftData
+import PokeAPI
 
 @Observable
 final class FavoritesStore {

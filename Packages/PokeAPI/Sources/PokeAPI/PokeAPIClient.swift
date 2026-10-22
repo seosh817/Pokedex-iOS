@@ -1,11 +1,15 @@
 import Foundation
 
-struct PokeAPIClient {
+public struct PokeAPIClient: Sendable {
     private let baseURL = URL(string: "https://pokeapi.co/api/v2/")!
     private let session: URLSession
     private let summaryCache: SummaryCache
-    
-    init(session: URLSession = .shared, summaryCache: SummaryCache = SummaryCache()) {
+
+    public init(session: URLSession = .shared) {
+        self.init(session: session, summaryCache: SummaryCache())
+    }
+
+    init(session: URLSession = .shared, summaryCache: SummaryCache) {
         self.session = session
         self.summaryCache = summaryCache
     }
@@ -18,12 +22,12 @@ struct PokeAPIClient {
         try await get("pokemon-species/\(id)")
     }
 
-    func fetchSummary(id: Int) async throws -> PokemonSummary {
+    public func fetchSummary(id: Int) async throws -> PokemonSummary {
         try await summaryCache.summary(id: id) {
             try await loadSummary(id: id)
         }
     }
-    
+
     private func loadSummary(id: Int) async throws -> PokemonSummary {
         async let pokemon = fetchPokemon(id: id)
         async let species = fetchSpecies(id: id)
@@ -36,7 +40,7 @@ struct PokeAPIClient {
         )
     }
 
-    func fetchSummaries(ids: [Int]) async throws -> [PokemonSummary] {
+    public func fetchSummaries(ids: [Int]) async throws -> [PokemonSummary] {
         try await withThrowingTaskGroup(of: PokemonSummary.self) {
             group in
             for id in ids {
@@ -49,16 +53,20 @@ struct PokeAPIClient {
             return results.sorted { $0.id < $1.id }
         }
     }
-    
-    func summaryPages(ids: [Int], pageSize: Int) -> AsyncThrowingStream<[PokemonSummary], Error> {
-        
+
+    public func summaryPages(ids: [Int], pageSize: Int) -> AsyncThrowingStream<
+        [PokemonSummary], Error
+    > {
+
         AsyncThrowingStream { continuation in
             let task = Task {
                 do {
                     for start in stride(from: 0, to: ids.count, by: pageSize) {
                         try Task.checkCancellation()
                         let end = min(start + pageSize, ids.count)
-                        let page = try await fetchSummaries(ids: Array(ids[start..<end]))
+                        let page = try await fetchSummaries(
+                            ids: Array(ids[start..<end])
+                        )
                         continuation.yield(page)
                     }
                     continuation.finish()
@@ -70,7 +78,8 @@ struct PokeAPIClient {
         }
     }
 
-    private func get<T: Decodable & Sendable>(_ path: String) async throws -> T {
+    private func get<T: Decodable & Sendable>(_ path: String) async throws -> T
+    {
         let url = baseURL.appending(path: path)
         let (data, response) = try await session.data(from: url)
         guard let http = response as? HTTPURLResponse, http.statusCode == 200
@@ -79,9 +88,11 @@ struct PokeAPIClient {
         }
         return try await Self.decode(data)
     }
-    
+
     @concurrent
-    private static func decode<T: Decodable & Sendable>(_ data: Data) async throws -> T {
+    private static func decode<T: Decodable & Sendable>(_ data: Data)
+        async throws -> T
+    {
         try JSONDecoder().decode(T.self, from: data)
     }
 }

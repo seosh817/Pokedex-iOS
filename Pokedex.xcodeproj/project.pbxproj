@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		F58785F63089D21F00E541A6 /* PokeAPI in Frameworks */ = {isa = PBXBuildFile; productRef = F58785F53089D21F00E541A6 /* PokeAPI */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		F5878563307F605D00E541A6 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -52,6 +56,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F58785F63089D21F00E541A6 /* PokeAPI in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -78,6 +83,7 @@
 				F5878557307F605B00E541A6 /* Pokedex */,
 				F5878565307F605D00E541A6 /* PokedexTests */,
 				F587856F307F605D00E541A6 /* PokedexUITests */,
+				F58785F43089D21F00E541A6 /* Frameworks */,
 				F5878556307F605B00E541A6 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -90,6 +96,13 @@
 				F587856C307F605D00E541A6 /* PokedexUITests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		F58785F43089D21F00E541A6 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -112,6 +125,7 @@
 			);
 			name = Pokedex;
 			packageProductDependencies = (
+				F58785F53089D21F00E541A6 /* PokeAPI */,
 			);
 			productName = Pokedex;
 			productReference = F5878555307F605B00E541A6 /* Pokedex.app */;
@@ -195,6 +209,9 @@
 			);
 			mainGroup = F587854C307F605B00E541A6;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				F58785F33089CE9700E541A6 /* XCLocalSwiftPackageReference "Packages/PokeAPI" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = F5878556307F605B00E541A6 /* Products */;
 			projectDirPath = "";
@@ -570,6 +587,21 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		F58785F33089CE9700E541A6 /* XCLocalSwiftPackageReference "Packages/PokeAPI" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Packages/PokeAPI;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		F58785F53089D21F00E541A6 /* PokeAPI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F58785F33089CE9700E541A6 /* XCLocalSwiftPackageReference "Packages/PokeAPI" */;
+			productName = PokeAPI;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = F587854D307F605B00E541A6 /* Project object */;
 }

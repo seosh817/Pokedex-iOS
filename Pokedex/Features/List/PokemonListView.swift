@@ -1,4 +1,5 @@
 import SwiftUI
+import PokeAPI
 
 struct PokemonListView: View {
     let title: String

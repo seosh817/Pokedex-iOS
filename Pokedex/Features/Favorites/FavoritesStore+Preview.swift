@@ -1,4 +1,5 @@
 import SwiftData
+import PokeAPI
 
 extension FavoritesStore {
     static func preview(ids: Set<Int> = []) -> FavoritesStore {

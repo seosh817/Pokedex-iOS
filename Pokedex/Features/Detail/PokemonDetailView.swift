@@ -1,4 +1,5 @@
 import SwiftUI
+import PokeAPI
 
 struct PokemonDetailView: View {
     let summary: PokemonSummary

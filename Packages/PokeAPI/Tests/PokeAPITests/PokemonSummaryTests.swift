@@ -1,7 +1,7 @@
 import Foundation
 import Testing
 
-@testable import Pokedex
+@testable import PokeAPI
 
 @MainActor
 struct PokemonSummaryTests {

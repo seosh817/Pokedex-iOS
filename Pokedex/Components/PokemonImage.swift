@@ -1,4 +1,5 @@
 import SwiftUI
+import PokeAPI
 
 struct PokemonImage: View {
     let url: URL?

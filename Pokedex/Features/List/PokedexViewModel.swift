@@ -1,4 +1,5 @@
 import Observation
+import PokeAPI
 
 protocol SummaryFetching {
     func fetchSummaries(ids: [Int]) async throws -> [PokemonSummary]

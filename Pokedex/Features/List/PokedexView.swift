@@ -1,4 +1,5 @@
 import SwiftUI
+import PokeAPI
 
 struct PokedexView: View {
     @Environment(FavoritesStore.self) private var favorites
