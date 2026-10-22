@@ -1,3 +1,4 @@
+import SwiftData
 import SwiftUI
 
 struct MainTabView: View {
@@ -18,7 +19,10 @@ struct MainTabView: View {
                     if pokedex.summaries.isEmpty {
                         if let message = pokedex.errorMessage {
                             ContentUnavailableView {
-                                Label("불러오지 못했어요", systemImage: "wifi.exclamationmark")
+                                Label(
+                                    "불러오지 못했어요",
+                                    systemImage: "wifi.exclamationmark"
+                                )
                             } description: {
                                 Text(message)
                             } actions: {
@@ -42,7 +46,9 @@ struct MainTabView: View {
                         Button {
                             showsFilter = true
                         } label: {
-                            Image(systemName: "line.3.horizontal.decrease.circle")
+                            Image(
+                                systemName: "line.3.horizontal.decrease.circle"
+                            )
                         }
                         .accessibilityLabel("보기 설정")
                     }
@@ -53,7 +59,7 @@ struct MainTabView: View {
             }
 
             NavigationStack {
-                PokemonListView(title: "즐겨찾기", summaries: favoriteSummaries)
+                FavoritesListView()
             }
             .tabItem {
                 Label("즐겨찾기", systemImage: "star.fill")
@@ -76,6 +82,8 @@ struct MainTabView: View {
 }
 
 #Preview {
+    let store = FavoritesStore.preview(ids: [1, 25])
     MainTabView()
-        .environment(FavoritesStore.preview(ids: [1, 25]))
+        .environment(store)
+        .modelContainer(store.container)
 }
