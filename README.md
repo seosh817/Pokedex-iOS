@@ -3,6 +3,10 @@
 A Pokédex app built with SwiftUI and modern Swift Concurrency, powered by [PokeAPI](https://pokeapi.co).
 The user interface is in Korean.
 
+<p align="center">
+  <img src="docs/preview.gif" alt="Preview" width="300">
+</p>
+
 <table>
   <tr>
     <th width="25%">List</th>
