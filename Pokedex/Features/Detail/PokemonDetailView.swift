@@ -72,6 +72,7 @@ struct PokemonDetailView: View {
                     Text(flavorText)
                         .multilineTextAlignment(.center)
                 }
+                StatsCard(stats: detail.stats)
             }
             .padding(.top, 8)
         } else if let message = viewModel.errorMessage {
