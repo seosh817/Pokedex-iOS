@@ -1,5 +1,8 @@
 import Observation
+import OSLog
 import PokeAPI
+
+private let logger = Logger(subsystem: "com.seosh817.Pokedex", category: "List")
 
 protocol SummaryFetching {
     func fetchSummaries(ids: [Int]) async throws -> [PokemonSummary]
@@ -43,7 +46,9 @@ final class PokedexViewModel {
             let page = try await client.fetchSummaries(ids: Array(start...end))
             summaries.append(contentsOf: page)
             errorMessage = nil
+            logger.debug("페이지 불러옴 \(start)...\(end)")
         } catch {
+            logger.error("페이지 불러오기 실패 \(start)...\(end): \(error.localizedDescription, privacy: .public)")
             errorMessage = "포켓몬을 불러오지 못했어요. 인터넷 연결을 확인해 주세요."
         }
     }
