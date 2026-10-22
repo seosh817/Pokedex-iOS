@@ -77,5 +77,5 @@ struct MainTabView: View {
 
 #Preview {
     MainTabView()
-        .environment(FavoritesStore(ids: [1, 25]))
+        .environment(FavoritesStore.preview(ids: [1, 25]))
 }

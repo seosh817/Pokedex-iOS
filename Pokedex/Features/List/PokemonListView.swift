@@ -43,5 +43,5 @@ struct PokemonListView: View {
     NavigationStack {
         PokemonListView(title: "도감", summaries: PokemonSummary.samples)
     }
-    .environment(FavoritesStore(ids: [25]))
+    .environment(FavoritesStore.preview(ids: [25]))
 }

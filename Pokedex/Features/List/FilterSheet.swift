@@ -23,5 +23,5 @@ struct FilterSheet: View {
 
 #Preview {
     FilterSheet()
-        .environment(FavoritesStore())
+        .environment(FavoritesStore.preview())
 }

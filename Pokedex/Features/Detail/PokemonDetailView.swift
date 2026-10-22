@@ -41,7 +41,7 @@ struct PokemonDetailView: View {
                             favorites.contains(summary.id)
                         },
                         set: {
-                            _ in favorites.toggle(summary.id)
+                            _ in favorites.toggle(summary)
                         }
                     )
                 )
@@ -54,5 +54,5 @@ struct PokemonDetailView: View {
     NavigationStack {
         PokemonDetailView(summary: .pikachu)
     }
-    .environment(FavoritesStore(ids: [25]))
+    .environment(FavoritesStore.preview(ids: [25]))
 }

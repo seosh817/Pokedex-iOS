@@ -32,7 +32,7 @@ struct PokemonCardView: View {
             FavoriteButton(
                 isOn: Binding(
                     get: { isFavorite },
-                    set: { _ in favorites.toggle(summary.id) }
+                    set: { _ in favorites.toggle(summary) }
                 )
             )
         }
@@ -43,12 +43,12 @@ struct PokemonCardView: View {
 #Preview("피카츄") {
     PokemonCardView(summary: .pikachu, isFavorite: true)
         .padding()
-        .environment(FavoritesStore(ids: [25]))
+        .environment(FavoritesStore.preview(ids: [25]))
 }
 
 #Preview("여러 장") {
     CardListPreview()
-        .environment(FavoritesStore(ids: [25]))
+        .environment(FavoritesStore.preview(ids: [25]))
 }
 
 #Preview("다크 모드") {
@@ -56,7 +56,7 @@ struct PokemonCardView: View {
         .padding()
         .background(Color(.systemGroupedBackground))
         .preferredColorScheme(.dark)
-        .environment(FavoritesStore())
+        .environment(FavoritesStore.preview())
 }
 
 private struct CardListPreview: View {
