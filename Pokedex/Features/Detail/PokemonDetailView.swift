@@ -1,9 +1,10 @@
-import SwiftUI
 import PokeAPI
+import SwiftUI
 
 struct PokemonDetailView: View {
     let summary: PokemonSummary
     @Environment(FavoritesStore.self) private var favorites
+    @State private var viewModel = PokemonDetailViewModel()
 
     var body: some View {
         ScrollView {
@@ -28,9 +29,13 @@ struct PokemonDetailView: View {
                         TypeBadge(type: type)
                     }
                 }
+                detailInfo
             }
             .frame(maxWidth: .infinity)
             .padding()
+        }
+        .task {
+            await viewModel.load(id: summary.id)
         }
         .navigationTitle(summary.koreanName)
         .navigationBarTitleDisplayMode(.inline)
@@ -47,6 +52,32 @@ struct PokemonDetailView: View {
                     )
                 )
             }
+        }
+    }
+    
+    @ViewBuilder
+    private var detailInfo: some View {
+        if let detail = viewModel.detail {
+            HStack(spacing: 40) {
+                stat("키", "\(detail.heightInMeters.formatted()) m")
+                stat("몸무게", "\(detail.weightInKilograms.formatted()) kg")
+            }
+            .padding(.top, 8)
+        } else if let message = viewModel.errorMessage {
+            Text(message)
+                .foregroundStyle(.secondary)
+        } else {
+            ProgressView()
+        }
+    }
+
+    private func stat(_ title: String, _ value: String) -> some View {
+        VStack(spacing: 4) {
+            Text(title)
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            Text(value)
+                .font(.title3.bold())
         }
     }
 }
