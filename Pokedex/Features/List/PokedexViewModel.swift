@@ -1,16 +1,22 @@
 import Observation
 
+protocol SummaryFetching {
+    func fetchSummaries(ids: [Int]) async throws -> [PokemonSummary]
+}
+
+extension PokeAPIClient: SummaryFetching {}
+
 @Observable
 final class PokedexViewModel {
     private(set) var summaries: [PokemonSummary] = []
     private(set) var isLoading = false
     private(set) var errorMessage: String?
     
-    private let client: PokeAPIClient
+    private let client: any SummaryFetching
     private let pageSize: Int
     private let maxID: Int
     
-    init(client: PokeAPIClient = PokeAPIClient(), pageSize: Int = 20, maxID: Int = 1025) {
+    init(client: any SummaryFetching = PokeAPIClient(), pageSize: Int = 20, maxID: Int = 1025) {
         self.client = client
         self.pageSize = pageSize
         self.maxID = maxID
