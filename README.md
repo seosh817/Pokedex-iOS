@@ -3,9 +3,20 @@
 A Pokédex app built with SwiftUI and modern Swift Concurrency, powered by [PokeAPI](https://pokeapi.co).
 The user interface is in Korean.
 
-| List | Detail | Base stats | Favorites |
-|---|---|---|---|
-| ![List](docs/screenshots/list.png) | ![Detail](docs/screenshots/detail.png) | ![Base stats](docs/screenshots/stats.png) | ![Favorites](docs/screenshots/favorites.png) |
+<table>
+  <tr>
+    <th width="25%">List</th>
+    <th width="25%">Detail</th>
+    <th width="25%">Base stats</th>
+    <th width="25%">Favorites</th>
+  </tr>
+  <tr>
+    <td><img src="docs/screenshots/list.png" alt="List" width="100%"></td>
+    <td><img src="docs/screenshots/detail.png" alt="Detail" width="100%"></td>
+    <td><img src="docs/screenshots/stats.png" alt="Base stats" width="100%"></td>
+    <td><img src="docs/screenshots/favorites.png" alt="Favorites" width="100%"></td>
+  </tr>
+</table>
 
 ## Features
 
