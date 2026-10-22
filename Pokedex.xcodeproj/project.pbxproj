@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F53D7DCD3089DC75006528AC /* NukeUI in Frameworks */ = {isa = PBXBuildFile; productRef = F53D7DCC3089DC75006528AC /* NukeUI */; };
 		F58785F63089D21F00E541A6 /* PokeAPI in Frameworks */ = {isa = PBXBuildFile; productRef = F58785F53089D21F00E541A6 /* PokeAPI */; };
 /* End PBXBuildFile section */
 
@@ -57,6 +58,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F58785F63089D21F00E541A6 /* PokeAPI in Frameworks */,
+				F53D7DCD3089DC75006528AC /* NukeUI in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -126,6 +128,7 @@
 			name = Pokedex;
 			packageProductDependencies = (
 				F58785F53089D21F00E541A6 /* PokeAPI */,
+				F53D7DCC3089DC75006528AC /* NukeUI */,
 			);
 			productName = Pokedex;
 			productReference = F5878555307F605B00E541A6 /* Pokedex.app */;
@@ -211,6 +214,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				F58785F33089CE9700E541A6 /* XCLocalSwiftPackageReference "Packages/PokeAPI" */,
+				F53D7DCB3089DC75006528AC /* XCRemoteSwiftPackageReference "Nuke" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = F5878556307F605B00E541A6 /* Products */;
@@ -595,7 +599,23 @@
 		};
 /* End XCLocalSwiftPackageReference section */
 
+/* Begin XCRemoteSwiftPackageReference section */
+		F53D7DCB3089DC75006528AC /* XCRemoteSwiftPackageReference "Nuke" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/kean/Nuke";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 13.2.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
 /* Begin XCSwiftPackageProductDependency section */
+		F53D7DCC3089DC75006528AC /* NukeUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F53D7DCB3089DC75006528AC /* XCRemoteSwiftPackageReference "Nuke" */;
+			productName = NukeUI;
+		};
 		F58785F53089D21F00E541A6 /* PokeAPI */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = F58785F33089CE9700E541A6 /* XCLocalSwiftPackageReference "Packages/PokeAPI" */;

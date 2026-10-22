@@ -1,21 +1,21 @@
-import SwiftUI
+import NukeUI
 import PokeAPI
+import SwiftUI
 
 struct PokemonImage: View {
     let url: URL?
-    
+
     var body: some View {
-        AsyncImage(url: url) { phase in
-            switch phase {
-            case .success(let image):
+        LazyImage(url: url) { state in
+            if let image = state.image {
                 image
                     .resizable()
                     .scaledToFit()
-            case .failure:
+            } else if state.error != nil {
                 Image(systemName: "questionmark")
                     .font(.title)
                     .foregroundStyle(.secondary)
-            default:
+            } else {
                 ProgressView()
             }
         }
