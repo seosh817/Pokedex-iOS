@@ -54,13 +54,24 @@ struct PokemonDetailView: View {
             }
         }
     }
-    
+
     @ViewBuilder
     private var detailInfo: some View {
         if let detail = viewModel.detail {
-            HStack(spacing: 40) {
-                stat("키", "\(detail.heightInMeters.formatted()) m")
-                stat("몸무게", "\(detail.weightInKilograms.formatted()) kg")
+            VStack(spacing: 20) {
+                if let genus = detail.genus {
+                    Text(genus)
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
+                HStack(spacing: 40) {
+                    stat("키", "\(detail.heightInMeters.formatted()) m")
+                    stat("몸무게", "\(detail.weightInKilograms.formatted()) kg")
+                }
+                if let flavorText = detail.flavorText {
+                    Text(flavorText)
+                        .multilineTextAlignment(.center)
+                }
             }
             .padding(.top, 8)
         } else if let message = viewModel.errorMessage {
