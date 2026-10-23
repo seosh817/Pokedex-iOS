@@ -2,11 +2,6 @@ import OSLog
 import Observation
 import PokeAPI
 
-private let logger = Logger(
-    subsystem: "com.seosh817.Pokedex",
-    category: "Detail"
-)
-
 protocol DetailFetching {
     func fetchDetail(id: Int) async throws -> PokemonDetail
 }
@@ -32,13 +27,13 @@ final class PokemonDetailViewModel {
         do {
             detail = try await client.fetchDetail(id: id)
             errorMessage = nil
-            logger.debug("상세 정보 불러옴 id=\(id)")
+            Logger.detail.debug("상세 정보 불러옴 id=\(id)")
         } catch {
             if Task.isCancelled {
-                logger.debug("상세 정보 불러오기 취소 id=\(id)")
+                Logger.detail.debug("상세 정보 불러오기 취소 id=\(id)")
                 return
             }
-            logger.error(
+            Logger.detail.error(
                 "상세 정보 불러오기 실패 id=\(id): \(error.localizedDescription, privacy: .public)"
             )
             errorMessage = "상세 정보를 불러오지 못했어요."
