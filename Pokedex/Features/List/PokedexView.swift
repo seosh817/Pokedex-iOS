@@ -36,11 +36,13 @@ struct PokedexView: View {
                 } else {
                     ProgressView("불러오는 중")
                 }
+            } else if viewModel.isLookingUpNumber {
+                ProgressView("찾는 중")
             } else if viewModel.isSearching && visibleSummaries.isEmpty {
                 ContentUnavailableView(
                     "검색 결과가 없어요",
                     systemImage: "magnifyingglass",
-                    description: Text("불러온 포켓몬에서 찾지 못했어요.")
+                    description: Text("불러온 포켓몬에서 찾지 못했어요. 번호로 검색하면 전체에서 찾을 수 있어요.")
                 )
             }
         }
@@ -49,6 +51,9 @@ struct PokedexView: View {
         }
         .task {
             await viewModel.loadFirstPageIfNeeded()
+        }
+        .task(id: viewModel.searchText) {
+            await viewModel.search()
         }
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {

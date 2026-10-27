@@ -14,6 +14,8 @@ final class PokedexViewModel {
     private(set) var isLoading = false
     private(set) var errorMessage: String?
     var searchText = ""
+    private(set) var numberResult: PokemonSummary?
+    private(set) var isLookingUpNumber = false
     
     private let client: any SummaryFetching
     private let pageSize: Int
@@ -36,11 +38,15 @@ final class PokedexViewModel {
     var searchResults: [PokemonSummary] {
         guard isSearching else { return summaries }
         let number = Self.number(from: query)
-        return summaries.filter {
+        var results = summaries.filter {
             $0.koreanName.contains(query)
                 || $0.name.localizedCaseInsensitiveContains(query)
                 || $0.id == number
         }
+        if let numberResult, !results.contains(numberResult) {
+            results.insert(numberResult, at: 0)
+        }
+        return results
     }
 
     private var query: String {
@@ -70,6 +76,32 @@ final class PokedexViewModel {
         }
     }
     
+    func search() async {
+        numberResult = nil
+        isLookingUpNumber = false
+        guard let id = Self.number(from: query), (1...maxID).contains(id),
+              !summaries.contains(where: { $0.id == id })
+        else { return }
+
+        isLookingUpNumber = true
+        defer {
+            if !Task.isCancelled { isLookingUpNumber = false }
+        }
+
+        try? await Task.sleep(for: .milliseconds(300))
+        if Task.isCancelled { return }
+
+        do {
+            let summary = try await client.fetchSummaries(ids: [id]).first
+            if Task.isCancelled { return }
+            numberResult = summary
+            Logger.list.debug("번호 검색 \(id)")
+        } catch {
+            if Task.isCancelled { return }
+            Logger.list.error("번호 검색 실패 \(id): \(error.localizedDescription, privacy: .public)")
+        }
+    }
+
     static func number(from text: String) -> Int? {
         Int(text.hasPrefix("#") ? String(text.dropFirst()) : text)
     }
