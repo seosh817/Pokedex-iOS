@@ -11,8 +11,13 @@ struct PokedexView: View {
             title: "도감",
             summaries: visibleSummaries,
             isLoadingMore: viewModel.isLoading,
-            onReachEnd: { await viewModel.loadNextPage() }
+            onReachEnd: {
+                if !viewModel.isSearching {
+                    await viewModel.loadNextPage()
+                }
+            }
         )
+        .searchable(text: $viewModel.searchText, prompt: "이름 또는 번호")
         .overlay {
             if viewModel.summaries.isEmpty {
                 if let message = viewModel.errorMessage {
@@ -31,6 +36,12 @@ struct PokedexView: View {
                 } else {
                     ProgressView("불러오는 중")
                 }
+            } else if viewModel.isSearching && visibleSummaries.isEmpty {
+                ContentUnavailableView(
+                    "검색 결과가 없어요",
+                    systemImage: "magnifyingglass",
+                    description: Text("불러온 포켓몬에서 찾지 못했어요.")
+                )
             }
         }
         .refreshable {
@@ -58,11 +69,11 @@ struct PokedexView: View {
     }
 
     private var favoriteSummaries: [PokemonSummary] {
-        viewModel.summaries.filter { favorites.contains($0.id) }
+        viewModel.searchResults.filter { favorites.contains($0.id) }
     }
 
     private var visibleSummaries: [PokemonSummary] {
-        favorites.showOnlyFavorites ? favoriteSummaries : viewModel.summaries
+        favorites.showOnlyFavorites ? favoriteSummaries : viewModel.searchResults
     }
 }
 

@@ -13,6 +13,7 @@ final class PokedexViewModel {
     private(set) var summaries: [PokemonSummary] = []
     private(set) var isLoading = false
     private(set) var errorMessage: String?
+    var searchText = ""
     
     private let client: any SummaryFetching
     private let pageSize: Int
@@ -26,6 +27,24 @@ final class PokedexViewModel {
     
     var hasMore: Bool {
         summaries.count < maxID
+    }
+
+    var isSearching: Bool {
+        !query.isEmpty
+    }
+
+    var searchResults: [PokemonSummary] {
+        guard isSearching else { return summaries }
+        let number = Self.number(from: query)
+        return summaries.filter {
+            $0.koreanName.contains(query)
+                || $0.name.localizedCaseInsensitiveContains(query)
+                || $0.id == number
+        }
+    }
+
+    private var query: String {
+        searchText.trimmingCharacters(in: .whitespaces)
     }
     
     func loadFirstPageIfNeeded() async {
@@ -51,6 +70,10 @@ final class PokedexViewModel {
         }
     }
     
+    static func number(from text: String) -> Int? {
+        Int(text.hasPrefix("#") ? String(text.dropFirst()) : text)
+    }
+
     func refresh() async {
         summaries = []
         errorMessage = nil

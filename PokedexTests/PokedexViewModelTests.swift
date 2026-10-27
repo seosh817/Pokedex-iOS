@@ -61,4 +61,16 @@ struct PokedexViewModelTests {
         #expect(model.errorMessage != nil)
         #expect(!model.isLoading)
     }
+
+    @Test("불러온 목록에서 이름으로 찾는다", arguments: [
+        ("포켓몬2", [2]),
+        ("POKEMON1", [1]),
+        ("없는 이름", []),
+    ])
+    func searchByName(query: String, expected: [Int]) async {
+        let model = PokedexViewModel(client: StubSummaryFetcher(), pageSize: 3, maxID: 5)
+        await model.loadFirstPageIfNeeded()
+        model.searchText = query
+        #expect(model.searchResults.map(\.id) == expected)
+    }
 }
