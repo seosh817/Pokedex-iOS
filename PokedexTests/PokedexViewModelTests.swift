@@ -45,6 +45,13 @@ final class SlowSummaryFetcher: SummaryFetching {
 }
 
 @MainActor
+extension PokemonNameIndex {
+    static let stub = PokemonNameIndex(names: (1...5).map {
+        PokemonName(id: $0, name: "pokemon\($0)", koreanName: "포켓몬\($0)")
+    })
+}
+
+@MainActor
 struct PokedexViewModelTests {
     @Test("첫 페이지를 불러온다")
     func firstPage() async {
@@ -90,7 +97,7 @@ struct PokedexViewModelTests {
         ("없는 이름", []),
     ])
     func searchByName(query: String, expected: [Int]) async {
-        let model = PokedexViewModel(client: StubSummaryFetcher(), pageSize: 3, maxID: 5)
+        let model = PokedexViewModel(client: StubSummaryFetcher(), nameIndex: .stub, pageSize: 3, maxID: 5)
         await model.loadFirstPageIfNeeded()
         model.searchText = query
         #expect(model.searchResults.map(\.id) == expected)
@@ -98,17 +105,42 @@ struct PokedexViewModelTests {
 
     @Test("아직 불러오지 않은 번호는 바로 불러와서 보여준다")
     func searchByNumberNotLoaded() async {
-        let model = PokedexViewModel(client: StubSummaryFetcher(), pageSize: 3, maxID: 5)
+        let model = PokedexViewModel(client: StubSummaryFetcher(), nameIndex: .stub, pageSize: 3, maxID: 5)
         await model.loadFirstPageIfNeeded()
         model.searchText = "#5"
         await model.search()
         #expect(model.searchResults.map(\.id) == [5])
     }
 
+    @Test("아직 불러오지 않은 포켓몬도 이름으로 찾는다")
+    func searchByNameNotLoaded() async {
+        let fetcher = CountingSummaryFetcher()
+        let model = PokedexViewModel(client: fetcher, nameIndex: .stub, pageSize: 3, maxID: 5)
+        await model.loadFirstPageIfNeeded()
+        model.searchText = "포켓몬"
+        await model.search()
+        #expect(model.searchResults.map(\.id) == [1, 2, 3, 4, 5])
+        #expect(fetcher.requestedIDs == [[1, 2, 3], [4, 5]])
+    }
+
+    @Test("검색 결과가 많으면 끝에 닿을 때 더 불러온다")
+    func loadMoreSearchResults() async {
+        let fetcher = CountingSummaryFetcher()
+        let model = PokedexViewModel(client: fetcher, nameIndex: .stub, pageSize: 2, maxID: 5)
+        await model.loadFirstPageIfNeeded()
+        model.searchText = "포켓몬"
+        await model.search()
+        #expect(model.searchResults.map(\.id) == [1, 2, 3, 4])
+
+        await model.loadMoreSearchResults()
+        #expect(model.searchResults.map(\.id) == [1, 2, 3, 4, 5])
+        #expect(fetcher.requestedIDs == [[1, 2], [3, 4], [5]])
+    }
+
     @Test("이미 불러온 번호는 다시 요청하지 않는다")
     func searchByNumberLoaded() async {
         let fetcher = CountingSummaryFetcher()
-        let model = PokedexViewModel(client: fetcher, pageSize: 3, maxID: 5)
+        let model = PokedexViewModel(client: fetcher, nameIndex: .stub, pageSize: 3, maxID: 5)
         await model.loadFirstPageIfNeeded()
         model.searchText = "2"
         await model.search()
@@ -116,10 +148,10 @@ struct PokedexViewModelTests {
         #expect(fetcher.requestedIDs == [[1, 2, 3]])
     }
 
-    @Test("검색어가 바뀌어 취소된 번호는 요청하지 않는다")
+    @Test("검색어가 바뀌어 취소된 검색은 요청하지 않는다")
     func cancelledSearchDoesNotFetch() async {
         let fetcher = CountingSummaryFetcher()
-        let model = PokedexViewModel(client: fetcher, pageSize: 3, maxID: 5)
+        let model = PokedexViewModel(client: fetcher, nameIndex: .stub, pageSize: 3, maxID: 5)
         await model.loadFirstPageIfNeeded()
 
         model.searchText = "4"
@@ -134,35 +166,37 @@ struct PokedexViewModelTests {
         #expect(model.searchResults.map(\.id) == [5])
     }
 
-    @Test("취소된 번호 검색의 응답이 늦게 와도 결과에 넣지 않는다", .timeLimit(.minutes(1)))
+    @Test("취소된 검색의 응답이 늦게 오면 지금 검색어에 맞을 때만 보인다", .timeLimit(.minutes(1)))
     func lateResponseAfterCancel() async {
         let fetcher = SlowSummaryFetcher()
-        let model = PokedexViewModel(client: fetcher, pageSize: 3, maxID: 5)
+        let model = PokedexViewModel(client: fetcher, nameIndex: .stub, pageSize: 3, maxID: 5)
 
         model.searchText = "4"
         let first = Task { await model.search() }
         while !fetcher.isFetching { await Task.yield() }
         first.cancel()
 
-        model.searchText = "포켓몬"
+        model.searchText = "없는 이름"
         await model.search()
         await first.value
-
         #expect(model.searchResults.isEmpty)
+
+        model.searchText = "4"
+        #expect(model.searchResults.map(\.id) == [4])
     }
 
-    @Test("번호를 찾는 동안에는 isLookingUpNumber가 true다", .timeLimit(.minutes(1)))
-    func lookingUpNumberState() async {
-        let model = PokedexViewModel(client: StubSummaryFetcher(), pageSize: 3, maxID: 5)
+    @Test("검색 결과를 불러오는 동안에는 isFetchingSearchResults가 true다", .timeLimit(.minutes(1)))
+    func fetchingSearchResultsState() async {
+        let model = PokedexViewModel(client: StubSummaryFetcher(), nameIndex: .stub, pageSize: 3, maxID: 5)
         await model.loadFirstPageIfNeeded()
         model.searchText = "5"
 
         let task = Task { await model.search() }
-        while !model.isLookingUpNumber { await Task.yield() }
+        while !model.isFetchingSearchResults { await Task.yield() }
         #expect(model.searchResults.isEmpty)
 
         await task.value
-        #expect(!model.isLookingUpNumber)
+        #expect(!model.isFetchingSearchResults)
         #expect(model.searchResults.map(\.id) == [5])
     }
 }

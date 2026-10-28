@@ -14,15 +14,22 @@ final class PokedexViewModel {
     private(set) var isLoading = false
     private(set) var errorMessage: String?
     var searchText = ""
-    private(set) var numberResult: PokemonSummary?
-    private(set) var isLookingUpNumber = false
+    private(set) var isFetchingSearchResults = false
+    private var searchCache: [Int: PokemonSummary] = [:]
     
     private let client: any SummaryFetching
+    private let nameIndex: PokemonNameIndex
     private let pageSize: Int
     private let maxID: Int
     
-    init(client: any SummaryFetching = PokeAPIClient(), pageSize: Int = 20, maxID: Int = 1025) {
+    init(
+        client: any SummaryFetching = PokeAPIClient(),
+        nameIndex: PokemonNameIndex = .bundled,
+        pageSize: Int = 20,
+        maxID: Int = 1025
+    ) {
         self.client = client
+        self.nameIndex = nameIndex
         self.pageSize = pageSize
         self.maxID = maxID
     }
@@ -37,16 +44,14 @@ final class PokedexViewModel {
 
     var searchResults: [PokemonSummary] {
         guard isSearching else { return summaries }
-        let number = Self.number(from: query)
-        var results = summaries.filter {
-            $0.koreanName.contains(query)
-                || $0.name.localizedCaseInsensitiveContains(query)
-                || $0.id == number
-        }
-        if let numberResult, !results.contains(numberResult) {
-            results.insert(numberResult, at: 0)
-        }
-        return results
+        let loaded = Dictionary(summaries.map { ($0.id, $0) }, uniquingKeysWith: { first, _ in first })
+        return nameIndex.ids(matching: query).compactMap { loaded[$0] ?? searchCache[$0] }
+    }
+
+    private var missingSearchIDs: [Int] {
+        guard isSearching else { return [] }
+        let loaded = Set(summaries.map(\.id))
+        return nameIndex.ids(matching: query).filter { !loaded.contains($0) && searchCache[$0] == nil }
     }
 
     private var query: String {
@@ -77,33 +82,40 @@ final class PokedexViewModel {
     }
     
     func search() async {
-        numberResult = nil
-        isLookingUpNumber = false
-        guard let id = Self.number(from: query), (1...maxID).contains(id),
-              !summaries.contains(where: { $0.id == id })
-        else { return }
-
-        isLookingUpNumber = true
-        defer {
-            if !Task.isCancelled { isLookingUpNumber = false }
-        }
+        isFetchingSearchResults = !missingSearchIDs.isEmpty
+        guard isFetchingSearchResults else { return }
 
         try? await Task.sleep(for: .milliseconds(300))
         if Task.isCancelled { return }
-
-        do {
-            let summary = try await client.fetchSummaries(ids: [id]).first
-            if Task.isCancelled { return }
-            numberResult = summary
-            Logger.list.debug("번호 검색 \(id)")
-        } catch {
-            if Task.isCancelled { return }
-            Logger.list.error("번호 검색 실패 \(id): \(error.localizedDescription, privacy: .public)")
-        }
+        await fetchSearchResults()
     }
 
-    static func number(from text: String) -> Int? {
-        Int(text.hasPrefix("#") ? String(text.dropFirst()) : text)
+    func loadMoreSearchResults() async {
+        guard !isFetchingSearchResults else { return }
+        await fetchSearchResults()
+    }
+
+    private func fetchSearchResults() async {
+        let ids = Array(missingSearchIDs.prefix(pageSize))
+        guard !ids.isEmpty else {
+            isFetchingSearchResults = false
+            return
+        }
+
+        isFetchingSearchResults = true
+        defer {
+            if !Task.isCancelled { isFetchingSearchResults = false }
+        }
+
+        do {
+            for summary in try await client.fetchSummaries(ids: ids) {
+                searchCache[summary.id] = summary
+            }
+            Logger.list.debug("검색 결과 \(ids.count)마리 불러옴")
+        } catch {
+            if Task.isCancelled { return }
+            Logger.list.error("검색 결과 불러오기 실패: \(error.localizedDescription, privacy: .public)")
+        }
     }
 
     func refresh() async {

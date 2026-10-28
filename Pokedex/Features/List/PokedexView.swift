@@ -10,9 +10,11 @@ struct PokedexView: View {
         PokemonListView(
             title: "도감",
             summaries: visibleSummaries,
-            isLoadingMore: viewModel.isLoading,
+            isLoadingMore: viewModel.isLoading || viewModel.isFetchingSearchResults,
             onReachEnd: {
-                if !viewModel.isSearching {
+                if viewModel.isSearching {
+                    await viewModel.loadMoreSearchResults()
+                } else {
                     await viewModel.loadNextPage()
                 }
             }
@@ -36,14 +38,16 @@ struct PokedexView: View {
                 } else {
                     ProgressView("불러오는 중")
                 }
-            } else if viewModel.isLookingUpNumber {
-                ProgressView("찾는 중")
             } else if viewModel.isSearching && visibleSummaries.isEmpty {
-                ContentUnavailableView(
-                    "검색 결과가 없어요",
-                    systemImage: "magnifyingglass",
-                    description: Text("불러온 포켓몬에서 찾지 못했어요. 번호로 검색하면 전체에서 찾을 수 있어요.")
-                )
+                if viewModel.isFetchingSearchResults {
+                    ProgressView("찾는 중")
+                } else {
+                    ContentUnavailableView(
+                        "검색 결과가 없어요",
+                        systemImage: "magnifyingglass",
+                        description: Text("이름이나 번호를 다시 확인해 주세요.")
+                    )
+                }
             }
         }
         .refreshable {
