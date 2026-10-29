@@ -4,11 +4,13 @@ A Pokédex app built with SwiftUI and modern Swift Concurrency, powered by [Poke
 The user interface is in Korean.
 
 <p align="center">
-  <img src="docs/screenshots/list.png" alt="List" width="18%">
-  <img src="docs/screenshots/search.png" alt="Search" width="18%">
-  <img src="docs/screenshots/detail.png" alt="Detail" width="18%">
-  <img src="docs/screenshots/stats.png" alt="Base stats" width="18%">
-  <img src="docs/screenshots/favorites.png" alt="Favorites" width="18%">
+  <img src="docs/screenshots/list.png" alt="List" width="25%">
+  <img src="docs/screenshots/search.png" alt="Search" width="25%">
+  <img src="docs/screenshots/detail.png" alt="Detail" width="25%">
+</p>
+<p align="center">
+  <img src="docs/screenshots/stats.png" alt="Base stats" width="25%">
+  <img src="docs/screenshots/favorites.png" alt="Favorites" width="25%">
 </p>
 
 ## Features
