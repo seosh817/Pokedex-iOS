@@ -18,12 +18,10 @@ The user interface is in Korean.
   <tr>
     <th>S&#8203;t&#8203;a&#8203;t&#8203;s</th>
     <th>F&#8203;a&#8203;v&#8203;o&#8203;r&#8203;i&#8203;t&#8203;e&#8203;s</th>
-    <th></th>
   </tr>
   <tr>
     <td><img src="docs/screenshots/stats.png" alt="Stats" width="210"></td>
     <td><img src="docs/screenshots/favorites.png" alt="Favorites" width="210"></td>
-    <td></td>
   </tr>
 </table>
 
