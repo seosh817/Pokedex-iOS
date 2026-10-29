@@ -3,6 +3,21 @@
 A Pokédex app built with SwiftUI and modern Swift Concurrency, powered by [PokeAPI](https://pokeapi.co).
 The user interface is in Korean.
 
+<p align="center">
+  <img src="docs/preview.gif" alt="Preview: list, search, detail and favorites" width="280">
+</p>
+
+## Features
+
+- Browse all 1,025 Pokémon with infinite scrolling and pull to refresh
+- Search all 1,025 Pokémon by Korean or English name, or by number, using a bundled name list (results that are not loaded yet are fetched in pages)
+- Korean names, type badges and official artwork with image caching
+- Detail screen with height, weight, category, Pokédex entry and an animated base stats card
+- Favorites saved on the device with SwiftData, a favorites tab and a "favorites only" filter
+- Liquid Glass number badge on iOS 26, with a material fallback on iOS 17–25
+
+## Screenshots
+
 <!-- &#8203; between letters lets every column shrink to the same width on narrow screens -->
 <table align="center">
   <tr>
@@ -26,15 +41,6 @@ The user interface is in Korean.
     <td><img src="docs/screenshots/filter.png" alt="Filter" width="210"></td>
   </tr>
 </table>
-
-## Features
-
-- Browse all 1,025 Pokémon with infinite scrolling and pull to refresh
-- Search all 1,025 Pokémon by Korean or English name, or by number, using a bundled name list (results that are not loaded yet are fetched in pages)
-- Korean names, type badges and official artwork with image caching
-- Detail screen with height, weight, category, Pokédex entry and an animated base stats card
-- Favorites saved on the device with SwiftData, a favorites tab and a "favorites only" filter
-- Liquid Glass number badge on iOS 26, with a material fallback on iOS 17–25
 
 ## Tech stack
 
