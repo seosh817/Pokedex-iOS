@@ -13,6 +13,7 @@ The user interface is in Korean.
 ## Features
 
 - Browse all 1,025 Pokémon with infinite scrolling and pull to refresh
+- Search all 1,025 Pokémon by Korean or English name, or by number, using a bundled name list (results that are not loaded yet are fetched in pages)
 - Korean names, type badges and official artwork with image caching
 - Detail screen with height, weight, category, Pokédex entry and an animated base stats card
 - Favorites saved on the device with SwiftData, a favorites tab and a "favorites only" filter
@@ -22,9 +23,9 @@ The user interface is in Korean.
 
 | Area | What is used |
 |---|---|
-| UI | SwiftUI, `NavigationStack`, `TabView`, `Grid`, animations, custom `ViewModifier` |
+| UI | SwiftUI, `NavigationStack`, `TabView`, `searchable`, `Grid`, animations, custom `ViewModifier` |
 | State | Observation (`@Observable`), MVVM with one view model per screen, `@Environment` for shared stores |
-| Concurrency | Swift 6 language mode, main actor by default, `async let`, `TaskGroup`, an `actor` cache that shares in-flight requests, `AsyncThrowingStream`, `@concurrent` JSON decoding |
+| Concurrency | Swift 6 language mode, main actor by default, `async let`, `TaskGroup`, an `actor` cache that shares in-flight requests, `AsyncThrowingStream`, `@concurrent` JSON decoding, search debounce with `.task(id:)` cancellation |
 | Persistence | SwiftData (`@Model`, `@Query`, in-memory containers for tests) |
 | Networking | `URLSession` in a local Swift package (`PokeAPI`) with a small public API |
 | Images | [Nuke](https://github.com/kean/Nuke) (`LazyImage`) |
@@ -38,7 +39,7 @@ Pokedex/
 ├── Pokedex/                  App target
 │   ├── App/                  App entry point and tab container
 │   ├── Components/           Reusable views (card, type badge, image, glass badge)
-│   ├── Data/                 SwiftData model
+│   ├── Data/                 SwiftData model, bundled Pokémon name list
 │   ├── Features/
 │   │   ├── List/             Pokédex screen, view model, filter sheet
 │   │   ├── Detail/           Detail screen, view model, base stats card
@@ -48,6 +49,7 @@ Pokedex/
 │   ├── Sources/PokeAPI/
 │   └── Tests/PokeAPITests/
 ├── PokedexTests/             App unit tests
+├── scripts/                  Generates the bundled name list from PokeAPI data
 └── docs/screenshots/
 ```
 
