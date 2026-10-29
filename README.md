@@ -3,15 +3,29 @@
 A Pokédex app built with SwiftUI and modern Swift Concurrency, powered by [PokeAPI](https://pokeapi.co).
 The user interface is in Korean.
 
-<p align="center">
-  <img src="docs/screenshots/list.png" alt="List" width="25%">
-  <img src="docs/screenshots/search.png" alt="Search" width="25%">
-  <img src="docs/screenshots/detail.png" alt="Detail" width="25%">
-</p>
-<p align="center">
-  <img src="docs/screenshots/stats.png" alt="Base stats" width="25%">
-  <img src="docs/screenshots/favorites.png" alt="Favorites" width="25%">
-</p>
+<!-- &#8203; between letters lets every column shrink to the same width on narrow screens -->
+<table align="center">
+  <tr>
+    <th>L&#8203;i&#8203;s&#8203;t</th>
+    <th>S&#8203;e&#8203;a&#8203;r&#8203;c&#8203;h</th>
+    <th>D&#8203;e&#8203;t&#8203;a&#8203;i&#8203;l</th>
+  </tr>
+  <tr>
+    <td><img src="docs/screenshots/list.png" alt="List" width="210"></td>
+    <td><img src="docs/screenshots/search.png" alt="Search" width="210"></td>
+    <td><img src="docs/screenshots/detail.png" alt="Detail" width="210"></td>
+  </tr>
+  <tr>
+    <th>S&#8203;t&#8203;a&#8203;t&#8203;s</th>
+    <th>F&#8203;a&#8203;v&#8203;o&#8203;r&#8203;i&#8203;t&#8203;e&#8203;s</th>
+    <th></th>
+  </tr>
+  <tr>
+    <td><img src="docs/screenshots/stats.png" alt="Stats" width="210"></td>
+    <td><img src="docs/screenshots/favorites.png" alt="Favorites" width="210"></td>
+    <td></td>
+  </tr>
+</table>
 
 ## Features
 
